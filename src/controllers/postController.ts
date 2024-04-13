@@ -6,6 +6,7 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 import { Post } from '../models/post';
+import { Comment } from '../models/comment';
 import { CustomRequest } from '../app';
 
 interface PostController {
@@ -98,6 +99,7 @@ postController.deletePost = asyncHandler(async (req, res, next) => {
     if (!post) {
       res.status(401).json({ success: false, message: 'Post not found' })
     } else {
+      const comments = await Comment.deleteMany({ post: post.id });
       res.status(200).json({ success: true, message: 'Post deleted successfuly' });
     }
   } catch (err) {

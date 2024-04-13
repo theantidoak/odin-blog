@@ -17,7 +17,7 @@ interface CommentController {
 export const commentController: CommentController = {};
 
 commentController.getComments = asyncHandler(async (req: Request, res: Response) => {  
-  const comments = await Comment.find();
+  const comments = await Comment.find( { post: req.params.post } );
   if (!comments) {
     res.status(404).json({ success: false, message: 'No comments found.' });
   } else {
@@ -26,6 +26,9 @@ commentController.getComments = asyncHandler(async (req: Request, res: Response)
 });
 
 commentController.createComment = [
+  body('post')
+    .trim()
+    .escape(),
   body('content')
     .trim()
     .isLength({ min: 1 })
@@ -51,7 +54,8 @@ commentController.createComment = [
     try {
       const comment = new Comment({
         content: req.body.content, 
-        author: req.body.author
+        author: req.body.author,
+        post: req.body.post
       });
       const result = await comment.save();
 

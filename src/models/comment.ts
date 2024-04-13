@@ -7,7 +7,8 @@ export const CommentSchema = new Schema({
   edit_time_stamp: { type: Date, default: Date.now },
   content: { type: String, required: true },
   author: { type: String, required: true },
-  likes: { type: Number, default: 0 }
+  likes: { type: Number, default: 0 },
+  post: { type: Schema.Types.ObjectId, ref: "Post", required: true },
 });
 
 export const Comment = mongoose.model("Comment", CommentSchema);
