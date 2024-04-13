@@ -1,12 +1,16 @@
 import path from 'path';
 import express, { Request, Response, NextFunction } from 'express';
-import jwt, { Secret } from 'jsonwebtoken';
 import cookieParser from 'cookie-parser';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 dotenv.config();
 
 import { routes } from './routes';
+
+export interface CustomRequest extends Request {
+  token?: string;
+  user?: any;
+}
 
 export const app = express();
 
@@ -39,34 +43,8 @@ app.use('/api', routes.userRouter);
 app.use('/api', routes.postRouter);
 app.use('/api', routes.commentRouter);
 
-app.post('/api/post', verifyToken, (req: Request, res: Response) => {  
-  jwt.verify(( req as Request & { token: string } ).token, process.env.SECRET as Secret, (err, decoded) => {
-
-    if (err) return res.status(403).json({ message: 'Unauthorized access' }); 
-
-    res.json({
-      message: `You sent the following message: ${req.body.message}`,
-      decoded
-    });
-
-  });
-});
-
-function verifyToken(req: Request, res: Response, next: NextFunction) {
-  const bearerHeader = req.headers['authorization'];
-  if (bearerHeader === undefined) return res.status(403).json({ message: 'Unauthorized access' });
-
-  const bearerToken = bearerHeader.split(' ')[1] ?? '';
-  ( req as Request & { token: string } ).token = bearerToken;
-  next();
-}
-
 // error handler
 app.use(function(err: any, req: Request, res: Response, next: NextFunction) {
-  // set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = req.app.get('env').toLowerCase() === 'development' ? err : {};
-
   // render the error page
   res.status(err.status || 500);
   res.render('error');

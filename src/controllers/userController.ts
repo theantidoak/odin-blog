@@ -8,12 +8,17 @@ dotenv.config();
 
 import { User } from '../models/user';
 
-export const userController: { login: any, logout: any } = { login: null, logout: null };
+interface UserController {
+  login?: any;
+  logout?: any;
+}
 
-userController.logout = (req: Request, res: Response, next: NextFunction) => {
+export const userController: UserController = {};
+
+userController.logout = asyncHandler((req: Request, res: Response, next: NextFunction) => {
   res.cookie('token', '', { httpOnly: true, secure: true, maxAge: 7200000, expires: new Date(0) });
-  res.status(200).json({ message: 'Logged out successfully' });
-};
+  res.status(200).json({ success: true, message: 'Logged out successfully' });
+});
 
 userController.login = [
   body('email')
@@ -41,6 +46,7 @@ userController.login = [
       }
 
       res.status(400).json({
+        success: false,
         title: "Login",
         user: req.body,
         errors: errors
@@ -49,14 +55,14 @@ userController.login = [
       return;
     }
 
-    jwt.sign({ user: req.body }, process.env.SECRET as Secret, { expiresIn: '2h' }, (err, token) => {
+    jwt.sign({ user: { id: user.id } }, process.env.SECRET as Secret, { expiresIn: '2h' }, (err, token) => {
       if (err) {
-        return res.status(500).json({ message: 'Error creating token' });
+        return res.status(500).json({ success: false, message: 'Error creating token', err });
       }
-
+      
       const expire = new Date(Date.now() + 2 * 24 * 60 * 60 * 1000);
       res.cookie('token', token, { httpOnly: true, secure: true, maxAge: 7200000, expires: expire });
-      res.status(200).json({ message: 'Login successful' });
+      res.status(200).json({ success: true, message: 'Login successful' });
     })
   })
 ];
