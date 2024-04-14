@@ -41,13 +41,8 @@ app.get('/api', (req: Request, res: Response) => {
 });
 
 const corsOptions = {
-  origin: function (origin: any, callback: any) {
-    if (!origin || allowList.indexOf(origin) !== -1) {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS'));
-    }
-  }
+  origin: true,
+  allowedHeaders: ['Content-Type', 'Authorization']
 };
 
 app.use(cors(corsOptions));
