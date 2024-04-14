@@ -40,7 +40,18 @@ app.get('/api', (req: Request, res: Response) => {
   });
 });
 
-app.use(cors());
+const corsOptions = {
+  origin: function (origin: any, callback: any) {
+    if (!origin || allowList.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true,
+};
+
+app.use(cors(corsOptions));
 app.use(authorizeDomain);
 
 app.use('/api', routes.userRouter);
