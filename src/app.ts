@@ -41,8 +41,9 @@ app.get('/api', (req: Request, res: Response) => {
 });
 
 const corsOptions = {
-  origin: '*',
-  allowedHeaders: ['Content-Type', 'Authorization']
+  origin: true,
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true
 };
 
 app.use(cors(corsOptions));
@@ -61,13 +62,13 @@ app.use(function(err: any, req: Request, res: Response, next: NextFunction) {
 
 
 
-const allowList = ['http://localhost:3000/'];
+const allowList = ['http://localhost:3000'];
 function authorizeDomain(req: Request, res: Response, next: NextFunction) {
   const requestBearerToken = req.headers['authorization'];
-  const requestReferer = req.headers['referer'];
+  const requestOrigin = req.headers['origin'];
 
   const hasAPIToken = requestBearerToken && requestBearerToken.split(' ')[1] === process.env.APITOKEN as string ? true : false;
-  const isAllowed = requestReferer && allowList.includes(requestReferer) ? true : false;
+  const isAllowed = requestOrigin && allowList.includes(requestOrigin) ? true : false;
 
   if (hasAPIToken || isAllowed) {
     next();
