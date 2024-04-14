@@ -10,15 +10,15 @@ function verifyToken(req: Request, res: Response, next: NextFunction) {
   if (bearerHeader === undefined) return res.status(401).json({ success: false, message: 'Unauthorized access' });
 
   const bearerToken = bearerHeader.split(' ')[1] ?? '';
-  ( req as Request & { token: string } ).token = bearerToken;
+  ( req as Request & { jwtToken: string } ).jwtToken = bearerToken;
   next();
 }
 
 function authenticateToken(req: CustomRequest, res: Response, next: NextFunction) {
-  const token = req.token;
-  if (!token) return res.status(401).json({ success: false, message: 'No token provided' });
+  const jwtToken = req.jwtToken;
+  if (!jwtToken) return res.status(401).json({ success: false, message: 'No jwt token provided' });
 
-  jwt.verify(token, process.env.SECRET as Secret, (err, decoded) => {
+  jwt.verify(jwtToken, process.env.SECRET as Secret, (err, decoded) => {
     if (err) return res.status(401).json({ success: false, message: 'Unauthorized access' });
     req.user = (decoded as any).user;
     next();

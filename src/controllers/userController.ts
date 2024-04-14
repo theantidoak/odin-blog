@@ -16,7 +16,7 @@ interface UserController {
 export const userController: UserController = {};
 
 userController.logout = asyncHandler((req: Request, res: Response, next: NextFunction) => {
-  res.cookie('token', '', { httpOnly: true, secure: true, maxAge: 7200000, expires: new Date(0) });
+  res.cookie('ob_secure_auth', '', { httpOnly: true, secure: true, maxAge: 7200000, expires: new Date(0) });
   res.status(200).json({ success: true, message: 'Logged out successfully' });
 });
 
@@ -55,13 +55,13 @@ userController.login = [
       return;
     }
 
-    jwt.sign({ user: { id: user.id } }, process.env.SECRET as Secret, { expiresIn: '2h' }, (err, token) => {
+    jwt.sign({ user: { id: user.id } }, process.env.SECRET as Secret, { expiresIn: '2h' }, (err, jwtToken) => {
       if (err) {
-        return res.status(500).json({ success: false, message: 'Error creating token', err });
+        return res.status(500).json({ success: false, message: 'Error creating jwt token', err });
       }
       
       const expire = new Date(Date.now() + 2 * 24 * 60 * 60 * 1000);
-      res.cookie('token', token, { httpOnly: true, secure: true, maxAge: 7200000, expires: expire });
+      res.cookie('ob_secure_auth', jwtToken, { httpOnly: true, secure: true, maxAge: 7200000, expires: expire });
       res.status(200).json({ success: true, message: 'Login successful' });
     })
   })
