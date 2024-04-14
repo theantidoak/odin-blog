@@ -5,16 +5,17 @@ import { CustomRequest } from '../app';
 
 export const router = express.Router();
 
-function verifyToken(req: Request, res: Response, next: NextFunction) {
-  const bearerHeader = req.headers['authorization'];
-  if (bearerHeader === undefined) return res.status(401).json({ success: false, message: 'Unauthorized access' });
-
-  const bearerToken = bearerHeader.split(' ')[1] ?? '';
-  ( req as Request & { jwtToken: string } ).jwtToken = bearerToken;
-  next();
+function verifyJWTToken(req: Request, res: Response, next: NextFunction) {
+  const bearerToken = req.cookies.ob_secure_auth;
+  if (bearerToken === undefined) {
+    res.status(401).json({ success: false, message: 'Unauthorized access' });
+  } else {
+    ( req as Request & { jwtToken: string } ).jwtToken = bearerToken;
+    next();
+  }
 }
 
-function authenticateToken(req: CustomRequest, res: Response, next: NextFunction) {
+function authenticateJWTToken(req: CustomRequest, res: Response, next: NextFunction) {
   const jwtToken = req.jwtToken;
   if (!jwtToken) return res.status(401).json({ success: false, message: 'No jwt token provided' });
 
@@ -25,12 +26,12 @@ function authenticateToken(req: CustomRequest, res: Response, next: NextFunction
   });
 }
 
-router.get('/posts', verifyToken, authenticateToken, postController.getPosts);
+router.get('/posts', verifyJWTToken, authenticateJWTToken, postController.getPosts);
 
-router.get('/posts/:slug', verifyToken, authenticateToken, postController.getPostBySlug);
+router.get('/posts/:slug', verifyJWTToken, authenticateJWTToken, postController.getPostBySlug);
 
-router.post('/posts', verifyToken, authenticateToken, postController.createPost);
+router.post('/posts', verifyJWTToken, authenticateJWTToken, postController.createPost);
 
-router.post('/posts/:slug', verifyToken, authenticateToken, postController.deletePost);
+router.post('/posts/:slug', verifyJWTToken, authenticateJWTToken, postController.deletePost);
 
-router.put('/posts/:slug', verifyToken, authenticateToken, postController.updatePost);
+router.put('/posts/:slug', verifyJWTToken, authenticateJWTToken, postController.updatePost);

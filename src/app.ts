@@ -40,22 +40,6 @@ app.get('/api', (req: Request, res: Response) => {
   });
 });
 
-const allowList = ['http://localhost:3000/'];
-function authorizeDomain(req: Request, res: Response, next: NextFunction) {
-  const apiToken = process.env.APITOKEN as string;
-  const requestBearerToken = req.headers['authorization'];
-  const requestReferer = req.headers['referer'];
-
-  const hasToken = requestBearerToken && requestBearerToken.split(' ')[1] === apiToken;
-  const isAllowed = requestReferer && allowList.includes(requestReferer);
-
-  if (hasToken || isAllowed) {
-    next();
-  } else {
-    res.status(403).send("Access denied");
-  }
-}
-
 app.use(cors());
 app.use(authorizeDomain);
 
@@ -69,3 +53,20 @@ app.use(function(err: any, req: Request, res: Response, next: NextFunction) {
   res.status(err.status || 500);
   res.render('error');
 });
+
+
+
+const allowList = ['http://localhost:3000/'];
+function authorizeDomain(req: Request, res: Response, next: NextFunction) {
+  const requestBearerToken = req.headers['authorization'];
+  const requestReferer = req.headers['referer'];
+
+  const hasAPIToken = requestBearerToken && requestBearerToken.split(' ')[1] === process.env.APITOKEN as string ? true : false;
+  const isAllowed = requestReferer && allowList.includes(requestReferer) ? true : false;
+
+  if (hasAPIToken || isAllowed) {
+    next();
+  } else {
+    res.status(403).send("Access denied");
+  }
+}
