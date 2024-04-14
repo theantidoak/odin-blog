@@ -41,7 +41,7 @@ app.get('/api', (req: Request, res: Response) => {
 });
 
 const corsOptions = {
-  origin: true,
+  origin: '*',
   allowedHeaders: ['Content-Type', 'Authorization']
 };
 
