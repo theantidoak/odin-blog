@@ -6,11 +6,13 @@ import { CustomRequest } from '../app';
 export const router = express.Router();
 
 function verifyJWTToken(req: Request, res: Response, next: NextFunction) {
-  const bearerToken = req.cookies.ob_secure_auth;
-  if (bearerToken === undefined) {
+  const requestBearerToken = req.headers['authorization'] as string;
+  const jwtToken = requestBearerToken ? requestBearerToken.split(' ')[1] as string : null;
+
+  if (!jwtToken) {
     res.status(401).json({ success: false, message: 'Unauthorized access' });
   } else {
-    ( req as Request & { jwtToken: string } ).jwtToken = bearerToken;
+    ( req as Request & { jwtToken: string } ).jwtToken = jwtToken;
     next();
   }
 }
