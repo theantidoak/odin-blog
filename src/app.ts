@@ -62,7 +62,7 @@ app.use(function(err: any, req: Request, res: Response, next: NextFunction) {
 
 
 
-const allowList = ['http://localhost:3000'];
+const allowList = ['http://localhost:3000', 'http://localhost:5173', 'https://odin-blog-production.netlify.app'];
 function authorizeDomain(req: Request, res: Response, next: NextFunction) {
   const requestBearerToken = req.headers['authorization'];
   const requestOrigin = req.headers['origin'];
