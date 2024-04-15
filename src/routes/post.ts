@@ -8,7 +8,7 @@ export const router = express.Router();
 function verifyJWTToken(req: Request, res: Response, next: NextFunction) {
   const bearerToken = req.cookies.ob_secure_auth;
   if (bearerToken === undefined) {
-    res.status(401).json({ success: false, message: `Unauthorized access. token: ${bearerToken}` });
+    res.status(401).json({ success: false, message: `Unauthorized access.` });
   } else {
     ( req as Request & { jwtToken: string } ).jwtToken = bearerToken;
     next();
