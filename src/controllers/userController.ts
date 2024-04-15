@@ -16,7 +16,6 @@ interface UserController {
 export const userController: UserController = {};
 
 userController.logout = asyncHandler((req: Request, res: Response, next: NextFunction) => {
-  res.cookie('ob_secure_auth', '', { expires: new Date(0) });
   res.status(200).json({ success: true, message: 'Logged out successfully' });
 });
 
@@ -61,9 +60,8 @@ userController.login = [
       }
       
       const expire = new Date(Date.now() + 2 * 24 * 60 * 60 * 1000);
-      const isProd = process.env.NODE_ENV === 'production' ? true : false;
-      res.cookie('ob_secure_auth', jwtToken, { httpOnly: isProd, secure: isProd, sameSite: 'none', maxAge: 7200000, expires: expire });
-      res.status(200).json({ success: true, message: 'Login successful' });
+      const cookie = { 'ob_secure_auth': jwtToken, path: '/', httpOnly: true, secure: true, sameSite: 'none', maxAge: 7200000, expires: expire };
+      res.status(200).json({ success: true, message: 'Login successful', cookie });
     })
   })
 ];
