@@ -65,7 +65,7 @@ app.use(function(err: any, req: Request, res: Response, next: NextFunction) {
 export function authorizeDomain(req: Request, res: Response, next: NextFunction) {
   const allowList = ['http://localhost:3000', 'http://localhost:5173', 'https://odin-blog-production.netlify.app'];
 
-  const requestBearerToken = req.headers['APIToken'] as string;
+  const requestBearerToken = req.headers['APIToken'] as string || req.headers['apitoken'] as string;
   const requestOrigin = req.headers['origin'];
 
   const hasAPIToken = requestBearerToken && requestBearerToken.split(' ')[1] === process.env.APITOKEN as string ? true : false;
