@@ -140,7 +140,8 @@ postController.updatePost = [
         });
       }
 
-      res.status(401).json({ 
+      res.status(401).json({
+        id: req.body.id,
         title: req.body.title, 
         content: req.body.content,
         errors: errors,

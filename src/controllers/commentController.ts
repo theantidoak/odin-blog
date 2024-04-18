@@ -17,7 +17,7 @@ interface CommentController {
 export const commentController: CommentController = {};
 
 commentController.getComments = asyncHandler(async (req: Request, res: Response) => {  
-  const comments = await Comment.find( { post: req.params.post } );
+  const comments = await Comment.find( { post: req.params.post } ).sort({ time_stamp: -1 });
   if (!comments) {
     res.status(404).json({ success: false, message: 'No comments found.' });
   } else {
@@ -42,7 +42,8 @@ commentController.createComment = [
   asyncHandler(async (req: CustomRequest, res: Response, next: NextFunction) => {
     const error = validationResult(req);
     if (!error.isEmpty()) {
-      res.status(401).json({ 
+      res.status(401).json({
+        post: req.body.post,
         content: req.body.content, 
         author: req.body.author,
         errors: error.array()
@@ -59,7 +60,7 @@ commentController.createComment = [
       });
       const result = await comment.save();
 
-      res.status(200).json({ success: true, message: 'Comment added successfully' });
+      res.status(200).json({ success: true, message: 'Comment added successfully', result });
     } catch (err) {
       res.status(500).json({ success: false, message: 'Error adding comment', err });
     }

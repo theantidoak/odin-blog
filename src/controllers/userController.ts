@@ -11,6 +11,7 @@ import { User } from '../models/user';
 interface UserController {
   login?: any;
   logout?: any;
+  auth?: any;
 }
 
 export const userController: UserController = {};
@@ -65,3 +66,7 @@ userController.login = [
     })
   })
 ];
+
+userController.auth = (req: Request, res: Response, next: NextFunction) => {
+  res.status(200).json({ success: true, message: 'User is Authorized' });
+};
