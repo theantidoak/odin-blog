@@ -34,6 +34,6 @@ router.get('/posts/:slug', verifyJWTToken, authenticateJWTToken, postController.
 
 router.post('/posts', verifyJWTToken, authenticateJWTToken, postController.createPost);
 
-router.post('/posts/:slug', verifyJWTToken, authenticateJWTToken, postController.deletePost);
+router.delete('/posts/:slug', verifyJWTToken, authenticateJWTToken, postController.deletePost);
 
 router.put('/posts/:slug', verifyJWTToken, authenticateJWTToken, postController.updatePost);
