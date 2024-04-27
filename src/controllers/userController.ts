@@ -67,6 +67,8 @@ userController.login = [
   })
 ];
 
-userController.auth = (req: Request, res: Response, next: NextFunction) => {
-  res.status(200).json({ success: true, message: 'User is Authorized' });
+userController.auth = async (req: Request, res: Response, next: NextFunction) => {
+  const { id } = (req as any).user;
+  const user = await User.findById(id);
+  res.status(200).json({ success: true, message: 'User is Authorized', user: user?.email });
 };
