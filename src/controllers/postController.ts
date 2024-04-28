@@ -43,8 +43,8 @@ postController.createPost = [
     .escape(),
   body('title')
     .trim()
-    .isLength({ min: 1 })
-    .withMessage('Title is required.')
+    .isLength({ min: 1, max: 150 })
+    .withMessage('Title must be between 1 and 150 characters.')
     .escape(),
   body('content')
     .trim()
@@ -113,8 +113,8 @@ postController.updatePost = [
     .escape(),
   body('title')
     .trim()
-    .isLength({ min: 1 })
-    .withMessage('Title is required.')
+    .isLength({ min: 1, max: 150 })
+    .withMessage('Title must be between 1 and 150 characters.')
     .escape(),
   body('content')
     .trim()

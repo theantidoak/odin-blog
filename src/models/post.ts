@@ -13,9 +13,12 @@ export const PostSchema = new Schema({
   user: { type: Schema.Types.ObjectId, ref: "User", required: true },
 });
 
-PostSchema.pre('save', function(next) {
+PostSchema.pre('save', async function(next) {
   if (this.isNew || this.isModified('title')) {
-    this.slug = this.title.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9\-]/g, '');
+    const blockedSlugs = [ 'post', 'login', 'api' ];
+    const slug = this.title.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9\-]/g, '');
+    const repeatSlugs = await (this.constructor as any).find({ slug: new RegExp(`^${slug}(-\\d+)?$`) });
+    this.slug = blockedSlugs.includes(slug) || repeatSlugs.length > 0 ? slug + `-${repeatSlugs.length}` : slug;
   }
   next();
 });
