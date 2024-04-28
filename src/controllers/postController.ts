@@ -45,6 +45,8 @@ postController.createPost = [
     .trim()
     .isLength({ min: 1, max: 150 })
     .withMessage('Title must be between 1 and 150 characters.')
+    .matches(/^[\p{L}\p{N} '-.,;:!?]+$/u)
+    .withMessage('Name can only contain letters, numbers, spaces, hyphens, apostrophes, and common punctuation.')
     .escape(),
   body('content')
     .trim()
@@ -158,7 +160,8 @@ postController.updatePost = [
         edit_time_stamp: Date.now(),
         is_published: req.body.published
       };
-      const result = await Post.findOneAndUpdate({ slug: req.params.slug }, newPost, { new: true });
+
+      const result = await Post.findOneAndUpdate({ _id: req.body.id }, newPost, { new: true });
 
       if (!result) {
         res.status(401).json({ success: false, message: 'Post not found' })

@@ -18,7 +18,21 @@ PostSchema.pre('save', async function(next) {
     const blockedSlugs = [ 'post', 'login', 'api' ];
     const slug = this.title.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9\-]/g, '');
     const repeatSlugs = await (this.constructor as any).find({ slug: new RegExp(`^${slug}(-\\d+)?$`) });
-    this.slug = blockedSlugs.includes(slug) || repeatSlugs.length > 0 ? slug + `-${repeatSlugs.length}` : slug;
+    repeatSlugs.sort((a: { slug: string; }, b: { slug: string; }) => {
+      const numA = parseInt(a.slug.replace(/^\D+/g, '')) || 0;
+      const numB = parseInt(b.slug.replace(/^\D+/g, '')) || 0;
+      return numA - numB;
+    });
+
+    let newSlugNumber = 0;
+    if (repeatSlugs.length > 0) {
+      const lastSlug = repeatSlugs[repeatSlugs.length - 1].slug;
+      const match = lastSlug.match(/-(\d+)$/);
+      newSlugNumber = match ? +match[1] + 1 : 1;
+    }
+
+    const newSlug = blockedSlugs.includes(slug) || repeatSlugs.length > 0 ? `${slug}-${newSlugNumber}` : slug;
+    this.slug = newSlug;
   }
   next();
 });
