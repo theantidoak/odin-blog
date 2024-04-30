@@ -87,7 +87,7 @@ postController.createPost = [
       });
       const result = await post.save();
 
-      res.status(200).json({ success: true, message: 'Post added successfully' });
+      res.status(200).json({ success: true, message: 'Post added successfully', post: result });
     } catch (err) {
       res.status(500).json({ success: false, message: 'Error adding post', err });
     }
@@ -153,7 +153,8 @@ postController.updatePost = [
     }
 
     try {
-      const newPost = req.body.title === 'publishing' || req.body.content === 'publishing' ? { is_published: req.body.published } : {
+      const currentPost = await Post.findOne({ _id: req.body.id });
+      const newPost = req.body.title === 'publishing' || req.body.content === 'publishing' ? { is_published: !currentPost?.is_published } : {
         title: req.body.title,
         content: req.body.content,
         edit_time_stamp: Date.now(),
@@ -164,7 +165,7 @@ postController.updatePost = [
       if (!result) {
         res.status(401).json({ success: false, message: 'Post not found' })
       } else {
-        res.status(200).json({ success: true, message: 'Post updated successfully' });
+        res.status(200).json({ success: true, message: 'Post updated successfully', post: result });
       }
     } catch (err) {
       res.status(500).json({ success: false, message: 'Error updating post', err });

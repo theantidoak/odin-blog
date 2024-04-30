@@ -16,12 +16,12 @@ interface CommentController {
 
 export const commentController: CommentController = {};
 
-commentController.getComments = asyncHandler(async (req: Request, res: Response) => {  
+commentController.getComments = asyncHandler(async (req: Request, res: Response) => {
   const comments = await Comment.find( { post: req.params.post } ).sort({ time_stamp: -1 });
   if (!comments) {
     res.status(404).json({ success: false, message: 'No comments found.' });
   } else {
-    res.status(200).json({ success: true, comments });
+    res.status(200).json({ success: true, comments, message: 'Comments found successfully.' });
   }
 });
 
