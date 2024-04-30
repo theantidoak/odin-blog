@@ -153,12 +153,10 @@ postController.updatePost = [
     }
 
     try {
-      const newPost = {
+      const newPost = req.body.title === 'publishing' || req.body.content === 'publishing' ? { is_published: req.body.published } : {
         title: req.body.title,
         content: req.body.content,
-        user: user.id,
         edit_time_stamp: Date.now(),
-        is_published: req.body.published
       };
 
       const result = await Post.findOneAndUpdate({ _id: req.body.id }, newPost, { new: true });
