@@ -16,9 +16,9 @@ interface UserController {
 
 export const userController: UserController = {};
 
-userController.logout = asyncHandler((req: Request, res: Response, next: NextFunction) => {
+userController.logout = (req: Request, res: Response, next: NextFunction) => {
   res.status(200).json({ success: true, message: 'Logged out successfully' });
-});
+};
 
 userController.login = [
   body('email')
@@ -67,8 +67,8 @@ userController.login = [
   })
 ];
 
-userController.auth = async (req: Request, res: Response, next: NextFunction) => {
+userController.auth = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
   const { id } = (req as any).user;
   const user = await User.findById(id);
-  res.status(200).json({ success: true, message: 'User is Authorized', user: user?.email });
-};
+  res.status(200).json({ success: true, message: 'User is Authorized', user: { email: user?.email, is_admin: user?.is_admin } });
+});

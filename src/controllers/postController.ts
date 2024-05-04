@@ -8,6 +8,7 @@ dotenv.config();
 import { Post } from '../models/post';
 import { Comment } from '../models/comment';
 import { CustomRequest } from '../app';
+import { User } from '../models/user';
 
 interface PostController {
   getPosts?: any;
