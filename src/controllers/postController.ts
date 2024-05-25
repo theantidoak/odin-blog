@@ -8,7 +8,6 @@ dotenv.config();
 import { Post } from '../models/post';
 import { Comment } from '../models/comment';
 import { CustomRequest } from '../app';
-import { User } from '../models/user';
 
 interface PostController {
   getPosts?: any;
@@ -20,7 +19,7 @@ interface PostController {
 
 export const postController: PostController = {};
 
-postController.getPosts = asyncHandler(async (req: Request, res: Response) => {  
+postController.getPosts = asyncHandler(async (req: Request, res: Response) => {
   const posts = await Post.find();
   if (!posts) {
     res.status(404).json({ success: false, message: 'No posts found.' });

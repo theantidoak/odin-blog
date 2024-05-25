@@ -21,6 +21,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, '..', 'public')));
 
 mongoose.set("strictQuery", false);
+const mongoDBLocal = "";
 const mongoDB = `mongodb+srv://${process.env.DBUSER}:${process.env.DBPASSWORD}@cluster0.zp8czot.mongodb.net/odin_blog?retryWrites=true&w=majority`
   || "mongodb+srv://user:password@cluster0.zp8czot.mongodb.net/odin_blog?retryWrites=true&w=majority";
 
